@@ -9,13 +9,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import model.dto.Item;
+import service.ItemService;
+import service.ItemServiceImpl;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ItemFormController implements Initializable {
 
-    ItemService itemService = new ItemController();
+    ItemService itemService = new ItemServiceImpl();
 
     @FXML
     private JFXButton btnAdd;

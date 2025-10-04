@@ -1,25 +1,27 @@
-package controller.itemController;
+package service;
 
 import db.DBConnection;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import model.dto.Item;
+import repository.ItemRepository;
+import repository.ItemRepositoryImpl;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ItemController implements ItemService{
+public class ItemServiceImpl implements ItemService {
+    
+    ItemRepository itemRepository = new ItemRepositoryImpl();
+    
     @Override
     public ObservableList<Item> getAll() {
         ObservableList<Item> itemObservableList = FXCollections.observableArrayList();
-        String SQL = "SELECT * FROM item";
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement(SQL);
-            ResultSet resultSet = psTm.executeQuery();
+            ResultSet resultSet = itemRepository.getAll();
             while (resultSet.next()) {
                 itemObservableList.add(new Item(
                         resultSet.getString("ItemCode"),
@@ -37,19 +39,10 @@ public class ItemController implements ItemService{
 
     @Override
     public void addItem(Item newItem) {
-        String SQL = "INSERT INTO item Values(? ,? ,? ,? ,?)";
-
 
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement(SQL);
-            psTm.setObject(1,newItem.getItemCode());
-            psTm.setObject(2,newItem.getDescription());
-            psTm.setObject(3,newItem.getPackSize());
-            psTm.setObject(4,newItem.getUnitPrice());
-            psTm.setObject(5,newItem.getQtyOnHand());
+            itemRepository.addItem(newItem);
 
-            psTm.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -57,13 +50,9 @@ public class ItemController implements ItemService{
 
     @Override
     public void deleteItem(String itemCode) {
-        String Sql = "DELETE FROM item WHERE ItemCode = ?";
         Connection connection = null;
         try {
-            connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTM = connection.prepareStatement(Sql);
-            psTM.setObject(1,itemCode);
-            psTM.executeUpdate();
+            itemRepository.deleteItem(itemCode);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -71,16 +60,8 @@ public class ItemController implements ItemService{
 
     @Override
     public void updateItem(Item updateItem) {
-        String SQL = "UPDATE item SET Description = ? ,PackSize = ? ,UnitPrice = ? ,QtyOnHand = ? WHERE ItemCode =?";
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement(SQL);
-            psTm.setObject(5,updateItem.getItemCode());
-            psTm.setObject(1,updateItem.getDescription());
-            psTm.setObject(2,updateItem.getPackSize());
-            psTm.setObject(3,updateItem.getUnitPrice());
-            psTm.setObject(4,updateItem.getQtyOnHand());
-            psTm.executeUpdate();
+            itemRepository.updateItem(updateItem);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -88,11 +69,8 @@ public class ItemController implements ItemService{
 
     @Override
     public Item searchItem(String itemCode, String description) {
-        String SQL = "SELECT * FROM item WHERE ItemCode = ? OR Description= ?";
         try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            PreparedStatement psTm = connection.prepareStatement(SQL);
-            ResultSet resultSet = psTm.executeQuery();
+            ResultSet resultSet = itemRepository.searchItem(itemCode, description);
             resultSet.next();
             return new Item(
                     resultSet.getString("ItemCode"),
