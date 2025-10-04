@@ -7,7 +7,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.input.KeyEvent;
+import model.dto.Customer;
+import model.dto.Item;
+import service.*;
+import service.impl.PlaceOrderServiceImpl;
 
 public class PlaceOrderFormController {
 
@@ -59,6 +62,8 @@ public class PlaceOrderFormController {
     @FXML
     private JFXTextField txtItemCode;
 
+    PlaceOrderService placeOrderService = new PlaceOrderServiceImpl();
+
     @FXML
     private JFXTextField txtQuantity;
 
@@ -73,8 +78,16 @@ public class PlaceOrderFormController {
     }
 
     @FXML
-    void txtItemCodeOnAction(KeyEvent event) {
+    void txtCustomerIdOnAction(ActionEvent event) {
+        Customer customer = placeOrderService.getCustomer(txtCustomerId.getText());
+        lblCustomerName.setText(customer.getCustomerName());
+    }
 
+    @FXML
+    void txtItemCodeOnAction(ActionEvent event) {
+        Item item = placeOrderService.getItem(txtItemCode.getText());
+        lblDescripstion.setText(item.getDescription());
+        lblPrice.setText(String.valueOf(item.getUnitPrice()));
     }
 
 }
