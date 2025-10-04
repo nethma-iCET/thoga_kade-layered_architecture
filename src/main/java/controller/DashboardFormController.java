@@ -31,12 +31,6 @@ public class DashboardFormController {
     }
 
     @FXML
-    void btnOrderDetailsOnAction(ActionEvent event) {
-
-    }
-
-
-    @FXML
     void btnItemOnAction(ActionEvent event) {
         try {
             itemStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/item.fxml"))));
@@ -52,4 +46,14 @@ public class DashboardFormController {
 
     }
 
+    Stage placeOrderStage = new Stage();
+    @FXML
+    public void btnPlaceOrderOnAction(ActionEvent actionEvent) {
+        try {
+            placeOrderStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/PlaceOrder.fxml"))));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        placeOrderStage.show();
+    }
 }
